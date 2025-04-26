@@ -119,6 +119,68 @@ Resources:
       SubnetId: !Ref PrivateSubnetC
       RouteTableId: !Ref PrivateRTB
 
+  # ──────────────  RDS Subnet  ──────────────
+  RdsSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.32.0/25 
+      AvailabilityZone: ap-northeast-1a
+      MapPublicIpOnLaunch: false
+      Tags: [{Key: Name, Value: rds-pvt-subnet-1}]
+
+  RdsSubnetC:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.33.0/25
+      AvailabilityZone: ap-northeast-1c
+      MapPublicIpOnLaunch: false
+      Tags: [{Key: Name, Value: rds-pvt-subnet-2}]
+
+  RdsSubnetD:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.32.128/25
+      AvailabilityZone: ap-northeast-1d
+      MapPublicIpOnLaunch: false
+      Tags: [{Key: Name, Value: rds-pvt-subnet-3}]
+
+  RdsRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:  [{Key: Name, Value: rds-pvt-rt}]
+
+  AssocRdsSubnetA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref RdsSubnetA
+      RouteTableId: !Ref RdsRouteTable
+
+  AssocRdsSubnetC:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref RdsSubnetC
+      RouteTableId: !Ref RdsRouteTable
+
+  AssocRdsSubnetD:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref RdsSubnetD
+      RouteTableId: !Ref RdsRouteTable
+
+  RdsSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: "RDS private subnets (3AZ)"
+      SubnetIds:
+        - !Ref RdsSubnetA
+        - !Ref RdsSubnetC
+        - !Ref RdsSubnetD
+      Tags: [{Key: Name, Value: rds-pvt-subnet-group}]
+
   # Security Group ------------------------------------------
   EC2SG:
     Type: AWS::EC2::SecurityGroup
