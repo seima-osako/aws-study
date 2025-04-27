@@ -246,18 +246,33 @@ Resources:
           Value: cfn-lab
 
 Outputs:
+  # ─────────── VPC ───────────
   VpcId:
-    Value: !Ref VPC
     Description: New VPC ID
-  PublicSubnetId:
-    Value: !Ref PublicSubnetA
-    Description: Public subnet ID
-  PrivateSubnetId:
-    Value: !Ref PrivateSubnetA
-    Description: Private subnet ID
+    Value: !Ref VPC
+    
+  # ─────────── Subnets ───────
+  PublicSubnetIds:
+    Description: Comma-separated list of public subnet IDs (1a & 1c)
+    Value: !Join [",", [!Ref PublicSubnetA, !Ref PublicSubnetC]]
+
+  PrivateSubnetIds:
+    Description: Comma-separated list of private subnet IDs (1a & 1c)
+    Value: !Join [",", [!Ref PrivateSubnetA, !Ref PrivateSubnetC]]
+
+  RdsSubnetIds:
+    Description: Comma-separated list of RDS-dedicated subnet IDs (1a, 1c, 1d)
+    Value: !Join [",", [!Ref RdsSubnetA, !Ref RdsSubnetC, !Ref RdsSubnetD]]
+
+  RdsSubnetGroupName:
+    Description: DB subnet group used for RDS
+    Value: !Ref RdsSubnetGroup
+
+  # ─────────── EC2 ───────────
   InstanceId:
-    Value: !Ref EC2Instance
     Description: EC2 instance ID
-  InstancePublicIP:
-    Value: !GetAtt EC2Instance.PublicIp
+    Value: !Ref EC2Instance
+
+  InstancePublicIp:
     Description: Public IP of the EC2 instance
+    Value: !GetAtt EC2Instance.PublicIp
