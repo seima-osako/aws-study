@@ -35,7 +35,7 @@ Resources:
         - Key: Name
           Value: cfn-lab-igw
 
-  AttacuhInternetGateway:
+  AttachInternetGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       VpcId: !Ref VPC
@@ -72,9 +72,9 @@ Resources:
         - Key: Name
           Value: cfn-lab-public-rtb
 
-  PubclicDefaultRoute:
+  PublicDefaultRoute:
     Type: AWS::EC2::Route
-    DependsOn: AttacuhInternetGateway
+    DependsOn: AttachInternetGateway
     Properties:
       RouteTableId: !Ref PublicRTB
       DestinationCidrBlock: 0.0.0.0/0
