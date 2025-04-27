@@ -24,12 +24,16 @@ Resources:
       CidrBlock: 10.0.0.0/16
       EnableDnsSupport: true
       EnableDnsHostnames: true
-      Tags: [{Key: Name, Value: cfn-lab-vpc}]
+      Tags:
+        - Key: Name
+          Value: cfn-lab-vpc
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
-      Tags: [{Key: Name, Value: cfn-lab-igw}]
+      Tags:
+        - Key: Name
+          Value: cfn-lab-igw
 
   AttacuhInternetGateway:
     Type: AWS::EC2::VPCGatewayAttachment
@@ -45,7 +49,9 @@ Resources:
       CidrBlock: 10.0.0.0/20
       AvailabilityZone: ap-northeast-1a
       MapPublicIpOnLaunch: true
-      Tags: [{Key: Name, Value: cfn-lab-public-a}]
+      Tags:
+        - Key: Name
+          Value: cfn-lab-public-a
 
   PrivateSubnetA:
     Type: AWS::EC2::Subnet
@@ -54,13 +60,17 @@ Resources:
       CidrBlock: 10.0.128.0/20
       AvailabilityZone: ap-northeast-1a
       MapPublicIpOnLaunch: false
-      Tags: [{Key: Name, Value: cfn-lab-private-a}]
+      Tags:
+        - Key: Name
+          Value: cfn-lab-private-a
 
   PublicRTB:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref VPC
-      Tags: [{Key: Name, Value: cfn-lab-public-rtb}]
+      Tags:
+        - Key: Name
+          Value: cfn-lab-public-rtb
 
   PubclicDefaultRoute:
     Type: AWS::EC2::Route
@@ -80,14 +90,15 @@ Resources:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref VPC
-      Tags: [{Key: Name, Value: cfn-lab-private-rtb}]
+      Tags:
+        - Key: Name
+          Value: cfn-lab-private-rtb
 
   AssocPrivateSubnetA:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PrivateSubnetA
       RouteTableId: !Ref PrivateRTB
-
 
   PublicSubnetC:
     Type: AWS::EC2::Subnet
@@ -96,7 +107,9 @@ Resources:
       CidrBlock: 10.0.16.0/20
       AvailabilityZone: ap-northeast-1c
       MapPublicIpOnLaunch: true
-      Tags: [{Key: Name, Value: cfn-lab-public-c}]
+      Tags:
+        - Key: Name
+          Value: cfn-lab-public-c
 
   PrivateSubnetC:
     Type: AWS::EC2::Subnet
@@ -105,7 +118,9 @@ Resources:
       CidrBlock: 10.0.144.0/20
       AvailabilityZone: ap-northeast-1c
       MapPublicIpOnLaunch: false
-      Tags: [{Key: Name, Value: cfn-lab-private-c}]
+      Tags:
+        - Key: Name
+          Value: cfn-lab-private-c
 
   AssocPublicSubnetC:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -127,7 +142,9 @@ Resources:
       CidrBlock: 10.0.32.0/25 
       AvailabilityZone: ap-northeast-1a
       MapPublicIpOnLaunch: false
-      Tags: [{Key: Name, Value: rds-pvt-subnet-1}]
+      Tags:
+        - Key: Name
+          Value: rds-pvt-subnet-1
 
   RdsSubnetC:
     Type: AWS::EC2::Subnet
@@ -136,7 +153,9 @@ Resources:
       CidrBlock: 10.0.33.0/25
       AvailabilityZone: ap-northeast-1c
       MapPublicIpOnLaunch: false
-      Tags: [{Key: Name, Value: rds-pvt-subnet-2}]
+      Tags:
+        - Key: Name
+          Value: rds-pvt-subnet-2
 
   RdsSubnetD:
     Type: AWS::EC2::Subnet
@@ -145,13 +164,17 @@ Resources:
       CidrBlock: 10.0.32.128/25
       AvailabilityZone: ap-northeast-1d
       MapPublicIpOnLaunch: false
-      Tags: [{Key: Name, Value: rds-pvt-subnet-3}]
+      Tags:
+        - Key: Name
+          Value: rds-pvt-subnet-3
 
   RdsRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref VPC
-      Tags:  [{Key: Name, Value: rds-pvt-rt}]
+      Tags:
+        - Key: Name
+          Value: rds-pvt-rt
 
   AssocRdsSubnetA:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -179,7 +202,9 @@ Resources:
         - !Ref RdsSubnetA
         - !Ref RdsSubnetC
         - !Ref RdsSubnetD
-      Tags: [{Key: Name, Value: rds-pvt-subnet-group}]
+      Tags:
+        - Key: Name
+          Value: rds-pvt-subnet-group
 
   # Security Group ------------------------------------------
   EC2SG:
@@ -188,13 +213,20 @@ Resources:
       GroupDescription: Allow SSH, HTTP, HTTPS, TCP 8080
       VpcId: !Ref VPC
       SecurityGroupIngress:
-        - {IpProtocol: tcp, FromPort: 22,  ToPort: 22,  CidrIp: 0.0.0.0/0}
-        - {IpProtocol: tcp, FromPort: 80,  ToPort: 80,  CidrIp: 0.0.0.0/0}
-        - {IpProtocol: tcp, FromPort: 443, ToPort: 443, CidrIp: 0.0.0.0/0}
-        - {IpProtocol: tcp, FromPort: 8080,ToPort: 8080,CidrIp: 0.0.0.0/0}
+        - IpProtocol: tcp
+          FromPort:   22
+          ToPort:     22
+          CidrIp:     217.105.35.85/32 # Allow SSH only from my IP
+        - IpProtocol: tcp
+          FromPort:   8080
+          ToPort:     8080
+          CidrIp:     0.0.0.0/0 # Allow HTTP access to Spring Boot app
       SecurityGroupEgress:
-        - {IpProtocol: -1, CidrIp: 0.0.0.0/0}
-      Tags: [{Key: Name, Value: cfn-lab-ec2-sg}]
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: cfn-lab-ec2-sg
 
   # EC2 Instance -------------------------------------------
   EC2Instance:
@@ -206,13 +238,26 @@ Resources:
       SubnetId:     !Ref PublicSubnetA
       SecurityGroupIds: [!Ref EC2SG]
       Tags:
-        - {Key: Name,        Value: cfn-lab-ec2}
-        - {Key: Environment, Value: lab}
-        - {Key: Project,     Value: cfn-lab}
+        - Key: Name
+          Value: cfn-lab-ec2
+        - Key: Environment
+          Value: lab
+        - Key: Project
+          Value: cfn-lab
 
 Outputs:
-  VpcId:               {Value: !Ref VPC,        Description: New VPC ID}
-  PublicSubnetId:      {Value: !Ref PublicSubnetA, Description: Public subnet ID}
-  PrivateSubnetId:     {Value: !Ref PrivateSubnetA,Description: Private subnet ID}
-  InstanceId:          {Value: !Ref EC2Instance,        Description: EC2 instance ID}
-  InstancePublicIP:    {Value: !GetAtt EC2Instance.PublicIp, Description: Public IP of the EC2 instance}
+  VpcId:
+    Value: !Ref VPC
+    Description: New VPC ID
+  PublicSubnetId:
+    Value: !Ref PublicSubnetA
+    Description: Public subnet ID
+  PrivateSubnetId:
+    Value: !Ref PrivateSubnetA
+    Description: Private subnet ID
+  InstanceId:
+    Value: !Ref EC2Instance
+    Description: EC2 instance ID
+  InstancePublicIP:
+    Value: !GetAtt EC2Instance.PublicIp
+    Description: Public IP of the EC2 instance
