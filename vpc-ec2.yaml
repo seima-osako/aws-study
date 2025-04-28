@@ -139,7 +139,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: 10.0.32.0/25 
+      CidrBlock: 10.0.32.0/25
       AvailabilityZone: ap-northeast-1a
       MapPublicIpOnLaunch: false
       Tags:
@@ -250,7 +250,7 @@ Outputs:
   VpcId:
     Description: New VPC ID
     Value: !Ref VPC
-    
+
   # ─────────── Subnets ───────
   PublicSubnetIds:
     Description: Comma-separated list of public subnet IDs (1a & 1c)
@@ -276,4 +276,3 @@ Outputs:
   InstancePublicIp:
     Description: Public IP of the EC2 instance
     Value: !GetAtt EC2Instance.PublicIp
-    
