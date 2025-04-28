@@ -262,10 +262,14 @@ Resources:
   MyTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
+      TargetGroupName: cfn-lab-tg
       TargetType: instance
       Protocol: HTTP
       Port: 8080
       VpcId: !Ref VPC
+      Targets:
+        - Id: !Ref EC2Instance
+          Port: 8080
       HealthCheckProtocol: HTTP
       HealthCheckPort: traffic-port
       HealthCheckPath: /
