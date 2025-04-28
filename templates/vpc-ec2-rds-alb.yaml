@@ -328,7 +328,7 @@ Resources:
       DBInstanceClass: db.t4g.micro
       AllocatedStorage: 20
       DBSubnetGroupName: !Ref RdsSubnetGroup
-      VPCSecurityGroups: [!Ref RdsSG]
+      VPCSecurityGroups: !Ref RdsSG
       MasterUsername: !Ref DbUser
       MasterUserPassword: !Ref DbPassword
       BackupRetentionPeriod: 0
