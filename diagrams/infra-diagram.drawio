@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="2a15a4KnvQgVZYlhwGfl" name="v1">
-        <mxGraphModel dx="1692" dy="1847" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1617" dy="1824" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -96,7 +96,7 @@
         </mxGraphModel>
     </diagram>
     <diagram name="v2" id="Tp1wlE0_T08lROKAxXDr">
-        <mxGraphModel dx="865" dy="1847" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="790" dy="1824" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="Tct59_yJiV7yBmVrYoFO-0"/>
                 <mxCell id="Tct59_yJiV7yBmVrYoFO-1" parent="Tct59_yJiV7yBmVrYoFO-0"/>
@@ -152,10 +152,10 @@
                 <mxCell id="mlSAVB4-lLy8CB5zNSfM-1" value="Availability Zone-c" style="fillColor=none;strokeColor=#147EBA;dashed=1;verticalAlign=top;fontStyle=0;fontColor=#147EBA;whiteSpace=wrap;html=1;" parent="Tct59_yJiV7yBmVrYoFO-4" vertex="1">
                     <mxGeometry x="390" y="48" width="230" height="460" as="geometry"/>
                 </mxCell>
-                <mxCell id="Tct59_yJiV7yBmVrYoFO-24" value="" style="endArrow=classic;html=1;strokeColor=#FF0000;strokeWidth=3;exitX=-0.001;exitY=0.364;exitDx=0;exitDy=0;exitPerimeter=0;" parent="Tct59_yJiV7yBmVrYoFO-4" edge="1">
+                <mxCell id="Tct59_yJiV7yBmVrYoFO-24" value="" style="endArrow=classic;html=1;strokeColor=#FF0000;strokeWidth=3;exitX=0;exitY=0.25;exitDx=0;exitDy=0;" parent="Tct59_yJiV7yBmVrYoFO-4" edge="1" source="Tct59_yJiV7yBmVrYoFO-16">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="259.8799999999999" y="54.03200000000015" as="sourcePoint"/>
-                        <mxPoint x="209.9950276243095" y="127.03999999999999" as="targetPoint"/>
+                        <mxPoint x="220" y="140" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="Tct59_yJiV7yBmVrYoFO-18" value="IGW" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.internet_gateway;labelPosition=center;" parent="Tct59_yJiV7yBmVrYoFO-4" vertex="1">
@@ -170,7 +170,7 @@
                 <mxCell id="Tct59_yJiV7yBmVrYoFO-23" value="WAF" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.waf;" parent="Tct59_yJiV7yBmVrYoFO-3" vertex="1">
                     <mxGeometry x="430" y="10" width="76" height="76" as="geometry"/>
                 </mxCell>
-                <mxCell id="_-3TolU5UkLG_j1Ph31D-0" value="" style="endArrow=classic;startArrow=classic;html=1;entryX=0.667;entryY=0.205;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="Tct59_yJiV7yBmVrYoFO-3" source="Tct59_yJiV7yBmVrYoFO-23" target="Tct59_yJiV7yBmVrYoFO-16">
+                <mxCell id="_-3TolU5UkLG_j1Ph31D-0" value="" style="endArrow=classic;startArrow=classic;html=1;entryX=0.667;entryY=0.205;entryDx=0;entryDy=0;entryPerimeter=0;" parent="Tct59_yJiV7yBmVrYoFO-3" source="Tct59_yJiV7yBmVrYoFO-23" target="Tct59_yJiV7yBmVrYoFO-16" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="350" y="270" as="sourcePoint"/>
                         <mxPoint x="400" y="220" as="targetPoint"/>
