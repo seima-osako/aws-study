@@ -2,6 +2,11 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: Create VPC with public & private subnets, route tables, security groups, a t2.micro EC2, Internet-facing ALB (HTTP → 8080) and MySQL RDS
 
 Parameters:
+  Prefix:
+    Type: String
+    Default: cfn-lab
+    Description: "Prefix for resource names"
+
   KeyName:
     Type: AWS::EC2::KeyPair::KeyName
     Description: "Name of an existing EC2 KeyPair to enable SSH access to the instance"
@@ -19,6 +24,7 @@ Parameters:
   DbUser:
     Type: String
     Default: root
+    Description: "RDS master user name"
 
   DbPassword:
     Type: String
@@ -35,14 +41,14 @@ Resources:
       EnableDnsHostnames: true
       Tags:
         - Key: Name
-          Value: cfn-lab-vpc
+          Value: !Sub "${Prefix}-vpc"
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
-          Value: cfn-lab-igw
+          Value: !Sub "${Prefix}-igw"
 
   AttachInternetGateway:
     Type: AWS::EC2::VPCGatewayAttachment
@@ -60,7 +66,7 @@ Resources:
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: cfn-lab-public-a
+          Value: !Sub "${Prefix}-public-a"
 
   PrivateSubnetA:
     Type: AWS::EC2::Subnet
@@ -71,7 +77,7 @@ Resources:
       MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
-          Value: cfn-lab-private-a
+          Value: !Sub "${Prefix}-private-a"
 
   PublicRTB:
     Type: AWS::EC2::RouteTable
@@ -79,7 +85,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: cfn-lab-public-rtb
+          Value: !Sub "${Prefix}-public-rtb"
 
   PublicDefaultRoute:
     Type: AWS::EC2::Route
@@ -101,7 +107,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: cfn-lab-private-rtb
+          Value: !Sub "${Prefix}-private-rtb"
 
   AssocPrivateSubnetA:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -118,7 +124,7 @@ Resources:
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: cfn-lab-public-c
+          Value: !Sub "${Prefix}-public-c"
 
   PrivateSubnetC:
     Type: AWS::EC2::Subnet
@@ -129,7 +135,7 @@ Resources:
       MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
-          Value: cfn-lab-private-c
+          Value: !Sub "${Prefix}-private-c"
 
   AssocPublicSubnetC:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -216,27 +222,34 @@ Resources:
           Value: rds-pvt-subnet-group
 
   # Security Group ------------------------------------------
-  EC2SG:
+  ALBSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Allow SSH, HTTP, HTTPS, TCP 8080
+      GroupDescription: Allow HTTP from the Internet to ALB
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort:   22
-          ToPort:     22
-          CidrIp:     217.105.35.85/32 # Allow SSH only from my IP
+          FromPort: 80
+          ToPort:   80
+          CidrIp:   0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: cfn-lab-alb-sg
+
+  EC2SG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH from admin IP and HTTP (8080) only from ALB
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort:   8080
-          ToPort:     8080
-          CidrIp:     0.0.0.0/0 # Allow HTTP access to Spring Boot app
+          FromPort: 22
+          ToPort:   22
+          CidrIp:   217.105.35.85/32
         - IpProtocol: tcp
-          FromPort:   80
-          ToPort:     80
-          CidrIp:     0.0.0.0/0 # Allow HTTP for ALB listener
-      SecurityGroupEgress:
-        - IpProtocol: -1
-          CidrIp: 0.0.0.0/0
+          FromPort: 8080
+          ToPort:   8080
+          SourceSecurityGroupId: !Ref ALBSG
       Tags:
         - Key: Name
           Value: cfn-lab-ec2-sg
@@ -249,20 +262,21 @@ Resources:
       ImageId:      !Ref AmiId
       KeyName:      !Ref KeyName
       SubnetId:     !Ref PublicSubnetA
-      SecurityGroupIds: [!Ref EC2SG]
+      SecurityGroupIds:
+        - !Ref EC2SG
       Tags:
         - Key: Name
-          Value: cfn-lab-ec2
+          Value: !Sub "${Prefix}-ec2"
         - Key: Environment
           Value: lab
         - Key: Project
-          Value: cfn-lab
+          Value: !Ref Prefix
 
   # ALB ------------------------------------------------------
   MyTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      TargetGroupName: cfn-lab-tg
+      TargetGroupName: !Sub "${Prefix}-tg"
       TargetType: instance
       Protocol: HTTP
       Port: 8080
@@ -277,18 +291,18 @@ Resources:
         HttpCode: 200
       Tags:
         - Key: Name
-          Value: cfn-lab-tg
+          Value: !Sub "${Prefix}-tg"
 
   MyLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: cfn-lab-alb
+      Name: !Sub "${Prefix}-alb"
       Scheme: internet-facing
       Subnets:
         - !Ref PublicSubnetA
         - !Ref PublicSubnetC
       SecurityGroups:
-        - !Ref EC2SG
+        - !Ref ALBSG
       LoadBalancerAttributes:
         - Key: deletion_protection.enabled
           Value: false
@@ -316,7 +330,7 @@ Resources:
           SourceSecurityGroupId: !Ref EC2SG
       Tags:
         - Key: Name
-          Value: cfn-lab-rds-sg
+          Value: !Sub "${Prefix}-rds-sg"
 
   MyDB:
     Type: AWS::RDS::DBInstance
@@ -337,4 +351,4 @@ Resources:
       PubliclyAccessible: false
       StorageType: gp2
       DeletionProtection: false
-      DBInstanceIdentifier: cfn-lab-mysql
+      DBInstanceIdentifier: !Sub "${Prefix}-mysql"
