@@ -423,3 +423,25 @@ Resources:
     Properties:
       WebACLArn: !GetAtt WebACL.Arn
       ResourceArn: !Ref MyLoadBalancer
+
+  # CloudWatch Logs Group -------------------------------
+  WAFLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Properties:
+      LogGroupName: !Sub "aws-waf-logs-${Prefix}-webacl"
+      RetentionInDays: 1
+      Tags:
+        - Key: Name
+          Value: !Sub "${Prefix}-wafv2-logs"
+
+  # WAFv2 Logging Configuration --------------------------
+  WAFLoggingConfiguration:
+    Type: AWS::WAFv2::LoggingConfiguration
+    DependsOn: WAFLogGroup
+    Properties:
+      ResourceArn: !GetAtt WebACL.Arn
+      LogDestinationConfigs:
+        - !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:aws-waf-logs-${Prefix}-webacl"
+      RedactedFields: []
