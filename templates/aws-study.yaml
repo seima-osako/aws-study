@@ -427,8 +427,6 @@ Resources:
   # CloudWatch Logs Group -------------------------------
   WAFLogGroup:
     Type: AWS::Logs::LogGroup
-    DeletionPolicy: Delete
-    UpdateReplacePolicy: Delete
     Properties:
       LogGroupName: !Sub "aws-waf-logs-${Prefix}-webacl"
       RetentionInDays: 1
@@ -439,9 +437,8 @@ Resources:
   # WAFv2 Logging Configuration --------------------------
   WAFLoggingConfiguration:
     Type: AWS::WAFv2::LoggingConfiguration
-    DependsOn: WAFLogGroup
     Properties:
       ResourceArn: !GetAtt WebACL.Arn
       LogDestinationConfigs:
-        - !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:aws-waf-logs-${Prefix}-webacl"
+        - !GetAtt WAFLogGroup.Arn
       RedactedFields: []
