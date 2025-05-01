@@ -9,17 +9,17 @@ resource "aws_vpc" "this" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
-  tags = { Name = var.vpc_name }
+  tags = { Name = "${var.prefix}-vpc" }
 }
 
 resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this.id
-  tags   = { Name = "${var.vpc_name}-igw" }
+  tags   = { Name = "${var.prefix}-igw" }
 }
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
-  tags   = { Name = "${var.vpc_name}-public-rtb" }
+  tags   = { Name = "${var.prefix}-public-rtb" }
 }
 
 resource "aws_route" "public_default" {
@@ -30,7 +30,7 @@ resource "aws_route" "public_default" {
 
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.this.id
-  tags   = { Name = "${var.vpc_name}-private-rtb" }
+  tags   = { Name = "${var.prefix}-private-rtb" }
 }
 
 resource "aws_route_table" "rds" {
@@ -44,7 +44,7 @@ resource "aws_subnet" "public" {
   cidr_block              = each.value
   availability_zone       = each.key
   map_public_ip_on_launch = true
-  tags = { Name = "${var.vpc_name}-public-${local.az_suffix[each.key]}" }
+  tags = { Name = "${var.prefix}-public-${local.az_suffix[each.key]}" }
 }
 
 resource "aws_subnet" "private" {
@@ -53,7 +53,7 @@ resource "aws_subnet" "private" {
   cidr_block              = each.value
   availability_zone       = each.key
   map_public_ip_on_launch = false
-  tags = { Name = "${var.vpc_name}-private-${local.az_suffix[each.key]}" }
+  tags = { Name = "${var.prefix}-private-${local.az_suffix[each.key]}" }
 }
 
 resource "aws_subnet" "rds" {
