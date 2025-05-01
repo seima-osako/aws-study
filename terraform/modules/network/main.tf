@@ -62,7 +62,7 @@ resource "aws_subnet" "rds" {
   cidr_block              = each.value
   availability_zone       = each.key
   map_public_ip_on_launch = false
-  tags = { Name = "rds-pvt-subnet-${lookup({for k,idx in keys(local.rds_map) : k => idx+1}, each.key)}" }
+  tags = { Name = "rds-pvt-subnet-${index(keys(local.rds_map), each.key) + 1}" }
 }
 
 resource "aws_route_table_association" "public" {
