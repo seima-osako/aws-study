@@ -1,51 +1,77 @@
-resource "aws_security_group" "alb" {
+############################
+# Security‑group shells
+############################
+
+resource "aws_security_group" "alb_sg" {
   name        = "${var.prefix}-alb-sg"
   description = "Allow HTTP from the Internet to ALB"
   vpc_id      = var.vpc_id
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  tags = {
+    Name = "${var.prefix}-alb-sg"
   }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = { Name = "${var.prefix}-alb-sg" }
 }
 
-
-resource "aws_security_group" "ec2" {
+resource "aws_security_group" "ec2_sg" {
   name        = "${var.prefix}-ec2-sg"
-  description = "Allow SSH from admin and HTTP(8080) only from ALB"
+  description = "Allow SSH from admin CIDR and HTTP (8080) only from ALB"
   vpc_id      = var.vpc_id
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.admin_cidr]
+  tags = {
+    Name = "${var.prefix}-ec2-sg"
   }
+}
 
-  ingress {
-    from_port       = 8080
-    to_port         = 8080
-    protocol        = "tcp"
-    security_groups = [aws_security_group.alb.id]
-  }
+############################
+# ALB rules
+############################
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+# Ingress : HTTP 80 from anywhere
+resource "aws_vpc_security_group_ingress_rule" "alb_http" {
+  security_group_id = aws_security_group.alb_sg.id
 
-  tags = { Name = "${var.prefix}-ec2-sg" }
+  from_port   = 80
+  to_port     = 80
+  ip_protocol = "tcp"
+  cidr_ipv4   = "0.0.0.0/0"
+}
+
+# Egress : allow all outbound
+resource "aws_vpc_security_group_egress_rule" "alb_all" {
+  security_group_id = aws_security_group.alb_sg.id
+
+  ip_protocol = "-1"
+  cidr_ipv4   = "0.0.0.0/0"
+}
+
+############################
+# EC2 rules
+############################
+
+# Ingress : SSH 22 from admin CIDR
+resource "aws_vpc_security_group_ingress_rule" "ec2_ssh" {
+  security_group_id = aws_security_group.ec2_sg.id
+
+  from_port   = 22
+  to_port     = 22
+  ip_protocol = "tcp"
+  cidr_ipv4   = var.admin_cidr
+}
+
+# Ingress : HTTP 8080 from ALB SG
+resource "aws_vpc_security_group_ingress_rule" "ec2_http_from_alb" {
+  security_group_id            = aws_security_group.ec2_sg.id
+  referenced_security_group_id = aws_security_group.alb_sg.id
+
+  from_port   = 8080
+  to_port     = 8080
+  ip_protocol = "tcp"
+}
+
+# Egress : allow all outbound
+resource "aws_vpc_security_group_egress_rule" "ec2_all" {
+  security_group_id = aws_security_group.ec2_sg.id
+
+  ip_protocol = "-1"
+  cidr_ipv4   = "0.0.0.0/0"
 }
