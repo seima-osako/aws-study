@@ -95,8 +95,8 @@ resource "aws_route_table_association" "rds" {
 }
 
 resource "aws_db_subnet_group" "this" {
-  name        = "rds-pvt-subnet-group"
+  name        = "${var.prefix}-rds-subnet-group"
   description = "RDS private subnets (3AZ)"
   subnet_ids  = [for s in aws_subnet.rds : s.id]
-  tags        = { Name = "rds-pvt-subnet-group" }
+  tags        = { Name = "${var.prefix}-rds-subnet-group" }
 }
