@@ -1,7 +1,18 @@
 locals {
+  # Creates a map where keys are Availability Zone names (e.g., "ap-northeast-1a")
+  # and values are the last character of the AZ name (e.g., "a").
+  # Used for creating unique resource names within each AZ.
   az_suffix = { for az in var.azs : az => substr(az, -1, 1) }
+
+  # Creates a map associating Availability Zones with their corresponding Public Subnet CIDR blocks.
+  # Keys are AZ names, values are CIDR blocks from var.public_subnet_cidrs based on index.
+  # Includes a check to prevent errors if var.azs has more elements than var.public_subnet_cidrs.
   public_map  = { for idx, az in var.azs : az => var.public_subnet_cidrs[idx]  if idx < length(var.public_subnet_cidrs) }
+
+  # Creates a map associating Availability Zones with their corresponding Private Subnet CIDR blocks.
   private_map = { for idx, az in var.azs : az => var.private_subnet_cidrs[idx] if idx < length(var.private_subnet_cidrs) }
+
+  # Creates a map associating Availability Zones with their corresponding RDS Subnet CIDR blocks.
   rds_map     = { for idx, az in var.azs : az => var.rds_subnet_cidrs[idx]     if idx < length(var.rds_subnet_cidrs) }
 }
 
