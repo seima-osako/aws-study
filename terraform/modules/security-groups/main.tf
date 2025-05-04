@@ -2,7 +2,7 @@
 # Security‑group shells
 ############################
 
-resource "aws_security_group" "load_balancer" {
+resource "aws_security_group" "alb" {
   name        = "${var.prefix}-alb-sg"
   description = "Allow HTTP from the Internet to ALB"
   vpc_id      = var.vpc_id
@@ -12,7 +12,7 @@ resource "aws_security_group" "load_balancer" {
   }
 }
 
-resource "aws_security_group" "app" {
+resource "aws_security_group" "ec2" {
   name        = "${var.prefix}-ec2-sg"
   description = "Allow SSH from admin CIDR and HTTP (8080) only from ALB"
   vpc_id      = var.vpc_id
@@ -27,8 +27,8 @@ resource "aws_security_group" "app" {
 ############################
 
 # Ingress : HTTP 80 from anywhere
-resource "aws_vpc_security_group_ingress_rule" "load_balancer_http_in" {
-  security_group_id = aws_security_group.load_balancer.id
+resource "aws_vpc_security_group_ingress_rule" "alb_http" {
+  security_group_id = aws_security_group.alb.id
 
   from_port   = 80
   to_port     = 80
@@ -37,8 +37,8 @@ resource "aws_vpc_security_group_ingress_rule" "load_balancer_http_in" {
 }
 
 # Egress : allow all outbound
-resource "aws_vpc_security_group_egress_rule" "load_balancer_all_out" {
-  security_group_id = aws_security_group.load_balancer.id
+resource "aws_vpc_security_group_egress_rule" "alb_all" {
+  security_group_id = aws_security_group.alb.id
 
   ip_protocol = "-1"
   cidr_ipv4   = "0.0.0.0/0"
@@ -49,8 +49,8 @@ resource "aws_vpc_security_group_egress_rule" "load_balancer_all_out" {
 ############################
 
 # Ingress : SSH 22 from admin CIDR
-resource "aws_vpc_security_group_ingress_rule" "app_ssh_in" {
-  security_group_id = aws_security_group.app.id
+resource "aws_vpc_security_group_ingress_rule" "ec2_ssh" {
+  security_group_id = aws_security_group.ec2.id
 
   from_port   = 22
   to_port     = 22
@@ -59,9 +59,9 @@ resource "aws_vpc_security_group_ingress_rule" "app_ssh_in" {
 }
 
 # Ingress : HTTP 8080 from ALB SG
-resource "aws_vpc_security_group_ingress_rule" "app_http_in" {
-  security_group_id            = aws_security_group.app.id
-  referenced_security_group_id = aws_security_group.load_balancer.id
+resource "aws_vpc_security_group_ingress_rule" "ec2_http" {
+  security_group_id            = aws_security_group.ec2.id
+  referenced_security_group_id = aws_security_group.alb.id
 
   from_port   = 8080
   to_port     = 8080
@@ -69,8 +69,8 @@ resource "aws_vpc_security_group_ingress_rule" "app_http_in" {
 }
 
 # Egress : allow all outbound
-resource "aws_vpc_security_group_egress_rule" "app_all_out" {
-  security_group_id = aws_security_group.app.id
+resource "aws_vpc_security_group_egress_rule" "ec2_all" {
+  security_group_id = aws_security_group.ec2.id
 
   ip_protocol = "-1"
   cidr_ipv4   = "0.0.0.0/0"
