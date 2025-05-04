@@ -49,7 +49,7 @@ resource "aws_lb_target_group_attachment" "tg_to_app" {
 ############################
 # Application Load Balancer
 ############################
-resource "aws_lb" "frontend_lb" {
+resource "aws_lb" "app" {
   name                       = "${var.prefix}-alb"
   internal                   = false
   load_balancer_type         = "application"
@@ -65,8 +65,8 @@ resource "aws_lb" "frontend_lb" {
 ############################
 # Listener : port 80 → TG
 ############################
-resource "aws_lb_listener" "http_listener" {
-  load_balancer_arn = aws_lb.frontend_lb.arn
+resource "aws_lb_listener" "app" {
+  load_balancer_arn = aws_lb.app.arn
   port              = 80
   protocol          = "HTTP"
 
