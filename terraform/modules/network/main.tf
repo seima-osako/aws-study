@@ -20,17 +20,23 @@ resource "aws_vpc" "network" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
-  tags = { Name = "${var.prefix}-vpc" }
+  tags = {
+    Name = "${var.prefix}-vpc"
+  }
 }
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.network.id
-  tags   = { Name = "${var.prefix}-igw" }
+  tags   = {
+    Name = "${var.prefix}-igw"
+  }
 }
 
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.network.id
-  tags   = { Name = "${var.prefix}-public-rtb" }
+  tags   = {
+    Name = "${var.prefix}-public-rtb"
+  }
 }
 
 resource "aws_route" "default_route" {
@@ -41,12 +47,16 @@ resource "aws_route" "default_route" {
 
 resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.network.id
-  tags   = { Name = "${var.prefix}-private-rtb" }
+  tags   = {
+    Name = "${var.prefix}-private-rtb"
+  }
 }
 
 resource "aws_route_table" "db_private_rt" {
   vpc_id = aws_vpc.network.id
-  tags   = { Name = "rds-pvt-rt" }
+  tags   = {
+    Name = "rds-pvt-rt"
+  }
 }
 
 resource "aws_subnet" "public_sn" {
@@ -55,7 +65,9 @@ resource "aws_subnet" "public_sn" {
   cidr_block              = each.value
   availability_zone       = each.key
   map_public_ip_on_launch = true
-  tags = { Name = "${var.prefix}-public-${local.az_suffix[each.key]}" }
+  tags = {
+    Name = "${var.prefix}-public-${local.az_suffix[each.key]}"
+  }
 }
 
 resource "aws_subnet" "private_sn" {
@@ -64,7 +76,9 @@ resource "aws_subnet" "private_sn" {
   cidr_block              = each.value
   availability_zone       = each.key
   map_public_ip_on_launch = false
-  tags = { Name = "${var.prefix}-private-${local.az_suffix[each.key]}" }
+  tags = {
+    Name = "${var.prefix}-private-${local.az_suffix[each.key]}"
+  }
 }
 
 resource "aws_subnet" "db_private_sn" {
@@ -73,7 +87,9 @@ resource "aws_subnet" "db_private_sn" {
   cidr_block              = each.value
   availability_zone       = each.key
   map_public_ip_on_launch = false
-  tags = { Name = "rds-pvt-subnet-${index(keys(local.rds_map), each.key) + 1}" }
+  tags = {
+    Name = "rds-pvt-subnet-${index(keys(local.rds_map), each.key) + 1}"
+  }
 }
 
 resource "aws_route_table_association" "public_assoc" {
@@ -98,5 +114,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
   name        = "${var.prefix}-rds-subnet-group"
   description = "RDS private subnets (3AZ)"
   subnet_ids  = [for s in aws_subnet.db_private_sn : s.id]
-  tags        = { Name = "${var.prefix}-rds-subnet-group" }
+  tags        = {
+    Name = "${var.prefix}-rds-subnet-group"
+  }
 }
