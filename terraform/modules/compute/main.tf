@@ -1,14 +1,14 @@
 ############################
 # EC2 Instance
 ############################
-resource "aws_instance" "ec2" {
+resource "aws_instance" "app" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
   key_name               = var.key_name
   subnet_id              = var.public_subnet_ids[0]
   vpc_security_group_ids = [var.ec2_sg_id]
 
-tags = {
+  tags = {
     Name        = "${var.prefix}-ec2"
     Environment = "lab"
     Project     = var.prefix
@@ -18,7 +18,7 @@ tags = {
 ############################
 # Target Group (HTTP:8080)
 ############################
-resource "aws_lb_target_group" "ec2" {
+resource "aws_lb_target_group" "app" {
   name        = "${var.prefix}-tg"
   port        = 8080
   protocol    = "HTTP"
@@ -40,16 +40,16 @@ resource "aws_lb_target_group" "ec2" {
 ############################
 # Attachment: TG → EC2
 ############################
-resource "aws_lb_target_group_attachment" "ec2" {
-  target_group_arn = aws_lb_target_group.ec2.arn
-  target_id        = aws_instance.ec2.id
+resource "aws_lb_target_group_attachment" "app" {
+  target_group_arn = aws_lb_target_group.app.arn
+  target_id        = aws_instance.app.id
   port             = 8080
 }
 
 ############################
 # Application Load Balancer
 ############################
-resource "aws_lb" "ec2" {
+resource "aws_lb" "app" {
   name                       = "${var.prefix}-alb"
   internal                   = false
   load_balancer_type         = "application"
@@ -65,13 +65,13 @@ resource "aws_lb" "ec2" {
 ############################
 # Listener : port 80 → TG
 ############################
-resource "aws_lb_listener" "ec2" {
-  load_balancer_arn = aws_lb.ec2.arn
+resource "aws_lb_listener" "app_http" {
+  load_balancer_arn = aws_lb.app.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.ec2.arn
+    target_group_arn = aws_lb_target_group.app.arn
   }
 }
