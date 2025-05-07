@@ -75,3 +75,35 @@ resource "aws_vpc_security_group_egress_rule" "app_all" {
   ip_protocol = "-1"
   cidr_ipv4   = "0.0.0.0/0"
 }
+
+############################
+# RDS Security Group
+############################
+
+resource "aws_security_group" "rds" {
+  name        = "${var.prefix}-rds-sg"
+  description = "Allow MySQL from EC2 SG"
+  vpc_id      = var.vpc_id
+
+  tags = {
+    Name = "${var.prefix}-rds-sg"
+  }
+}
+
+# Ingress : MySQL 3306 from EC2 SG
+resource "aws_vpc_security_group_ingress_rule" "rds_mysql" {
+  security_group_id            = aws_security_group.rds.id
+  referenced_security_group_id = aws_security_group.app_ec2.id
+
+  from_port   = 3306
+  to_port     = 3306
+  ip_protocol = "tcp"
+}
+
+# Egress : allow all outbound
+resource "aws_vpc_security_group_egress_rule" "rds_all" {
+  security_group_id = aws_security_group.rds.id
+
+  ip_protocol = "-1"
+  cidr_ipv4   = "0.0.0.0/0"
+}
