@@ -1,7 +1,6 @@
 ############################
 # Security‑group shells
 ############################
-
 resource "aws_security_group" "app_alb" {
   name        = "${var.prefix}-app-alb-sg"
   description = "Allow HTTP from the Internet to ALB"
@@ -79,7 +78,6 @@ resource "aws_vpc_security_group_egress_rule" "app_all" {
 ############################
 # RDS Security Group
 ############################
-
 resource "aws_security_group" "rds" {
   name        = "${var.prefix}-rds-sg"
   description = "Allow MySQL from EC2 SG"

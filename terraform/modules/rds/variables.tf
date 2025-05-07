@@ -28,7 +28,6 @@ variable "db_password" {
   type        = string
 }
 
-
 variable "rds_sg_id" {
   description = "Security Group ID to attach to the RDS instance"
   type        = string

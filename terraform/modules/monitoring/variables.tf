@@ -6,7 +6,6 @@ variable "prefix" {
 ########################################
 # SNS / CloudWatch Alarm
 ########################################
-
 variable "alert_email" {
   description = "Email address to receive CloudWatch alarm notifications"
   type        = string
@@ -17,11 +16,9 @@ variable "ec2_instance_id" {
   type        = string
 }
 
-
 ########################################
 # WAF
 ########################################
-
 variable "alb_arn" {
   description = "ARN of the Application Load Balancer"
   type        = string
