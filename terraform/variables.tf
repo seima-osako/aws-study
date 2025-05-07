@@ -13,7 +13,6 @@ variable "prefix" {
 variable "admin_cidr" {
   description = "CIDR to allow SSH to EC2 (e.g. your fixed IP)"
   type        = string
-  default     = "217.105.35.85/32"
 }
 
 variable "ami_id" {
@@ -32,4 +31,20 @@ variable "key_name" {
   description = "Existing EC2 key pair name"
   type        = string
   default     = "key-test"
+}
+
+variable "db_username" {
+  description = "Master username for the RDS instance"
+  type        = string
+}
+
+variable "db_password" {
+  description = "Master password for the RDS instance"
+  type        = string
+  sensitive   = true
+}
+
+variable "alert_email" {
+  description = "Email address to receive CloudWatch alarm notifications"
+  type        = string
 }

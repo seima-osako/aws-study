@@ -45,3 +45,7 @@ output "ec2_public_ip" {
   description = "Public IP of the EC2 instance"
   value       = module.compute.ec2_public_ip
 }
+output "alb_arn" {
+  description = "ARN of the Application Load Balancer"
+  value       = module.compute.alb_arn
+}
