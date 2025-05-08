@@ -2,6 +2,10 @@ variable "db_password" {
   type        = string
   description = "Master password for the RDS instance"
 }
+variable "db_subnet_group_name" {
+  description = "Name of an existing DB Subnet Group"
+  type        = string
+}
 
 variable "db_subnet_ids" {
   type        = list(string)

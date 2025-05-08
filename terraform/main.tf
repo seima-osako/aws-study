@@ -24,14 +24,15 @@ module "compute" {
 }
 
 module "rds" {
-  source        = "./modules/rds"
-  prefix        = var.prefix
-  vpc_id        = module.network.vpc_id
-  db_subnet_ids = module.network.rds_subnet_ids
-  rds_sg_id     = module.security.rds_sg_id
-  ec2_sg_id     = module.security.ec2_sg_id
-  db_username   = var.db_username
-  db_password   = var.db_password
+  source               = "./modules/rds"
+  prefix               = var.prefix
+  vpc_id               = module.network.vpc_id
+  db_subnet_ids        = module.network.rds_subnet_ids
+  db_subnet_group_name = module.network.db_subnet_group
+  rds_sg_id            = module.security.rds_sg_id
+  ec2_sg_id            = module.security.ec2_sg_id
+  db_username          = var.db_username
+  db_password          = var.db_password
 }
 module "monitoring" {
   source          = "./modules/monitoring"

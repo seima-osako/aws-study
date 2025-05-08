@@ -1,16 +1,4 @@
 ############################
-# DB Subnet Group
-############################
-resource "aws_db_subnet_group" "main" {
-  name        = "${var.prefix}-rds-subnet-group"
-  description = "RDS private subnets (3AZ)"
-  subnet_ids  = var.db_subnet_ids
-  tags = {
-    Name = "${var.prefix}-rds-subnet-group"
-  }
-}
-
-############################
 # RDS Instance
 ############################
 resource "aws_db_instance" "mysql" {
@@ -20,7 +8,7 @@ resource "aws_db_instance" "mysql" {
   instance_class            = "db.t4g.micro"
   allocated_storage         = 20
   storage_type              = "gp2"
-  db_subnet_group_name      = aws_db_subnet_group.main.name
+  db_subnet_group_name      = var.db_subnet_group_name
   vpc_security_group_ids    = [var.rds_sg_id]
   username                  = var.db_username
   password                  = var.db_password
