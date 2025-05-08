@@ -12,3 +12,11 @@ output "rds_sg_id" {
   description = "Security Group ID for the RDS instance"
   value       = aws_security_group.rds.id
 }
+
+output "web_acl_arn" {
+  value = aws_wafv2_web_acl.alb.arn
+}
+
+output "waf_log_group_arn" {
+  value = aws_cloudwatch_log_group.waf.arn
+}

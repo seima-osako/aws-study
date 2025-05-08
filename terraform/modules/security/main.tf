@@ -5,7 +5,6 @@ resource "aws_security_group" "app_alb" {
   name        = "${var.prefix}-app-alb-sg"
   description = "Allow HTTP from the Internet to ALB"
   vpc_id      = var.vpc_id
-
   tags = {
     Name = "${var.prefix}-app-alb-sg"
   }
@@ -15,7 +14,6 @@ resource "aws_security_group" "app_ec2" {
   name        = "${var.prefix}-app-ec2-sg"
   description = "Allow SSH from admin CIDR and HTTP (8080) only from ALB"
   vpc_id      = var.vpc_id
-
   tags = {
     Name = "${var.prefix}-app-ec2-sg"
   }
@@ -82,7 +80,6 @@ resource "aws_security_group" "rds" {
   name        = "${var.prefix}-rds-sg"
   description = "Allow MySQL from EC2 SG"
   vpc_id      = var.vpc_id
-
   tags = {
     Name = "${var.prefix}-rds-sg"
   }
@@ -104,4 +101,71 @@ resource "aws_vpc_security_group_egress_rule" "rds_all" {
 
   ip_protocol = "-1"
   cidr_ipv4   = "0.0.0.0/0"
+}
+
+############################
+# WAFv2  Web ACL
+############################
+resource "aws_wafv2_web_acl" "alb" {
+  name  = "${var.prefix}-webacl"
+  scope = "REGIONAL"
+  tags = {
+    Name = "${var.prefix}-webacl"
+  }
+
+  default_action {
+    allow {}
+  }
+
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "${var.prefix}-webacl"
+    sampled_requests_enabled   = true
+  }
+
+  rule {
+    name     = "AWSManagedRulesCommonRuleSet"
+    priority = 1
+
+    override_action {
+      none {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesCommonRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AWSManagedRulesCommonRuleSet"
+      sampled_requests_enabled   = true
+    }
+  }
+}
+
+############################
+# Web ACL ↔︎ ALB Association
+############################
+resource "aws_wafv2_web_acl_association" "alb" {
+  resource_arn = var.alb_arn
+  web_acl_arn  = aws_wafv2_web_acl.alb.arn
+}
+
+############################
+# CloudWatch Logs for WAF
+############################
+resource "aws_cloudwatch_log_group" "waf" {
+  name              = "aws-waf-logs-${var.prefix}-webacl"
+  retention_in_days = 1
+  tags = {
+    Name = "${var.prefix}-wafv2-logs"
+  }
+}
+
+resource "aws_wafv2_web_acl_logging_configuration" "alb" {
+  resource_arn            = aws_wafv2_web_acl.alb.arn
+  log_destination_configs = [aws_cloudwatch_log_group.waf.arn]
 }

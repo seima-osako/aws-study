@@ -5,7 +5,6 @@ resource "aws_db_subnet_group" "main" {
   name        = "${var.prefix}-rds-subnet-group"
   description = "RDS private subnets (3AZ)"
   subnet_ids  = var.db_subnet_ids
-
   tags = {
     Name = "${var.prefix}-rds-subnet-group"
   }
@@ -31,7 +30,6 @@ resource "aws_db_instance" "mysql" {
   deletion_protection       = false
   skip_final_snapshot       = false
   final_snapshot_identifier = "${var.prefix}-mysql-final"
-
   tags = {
     Name = "${var.prefix}-mysql"
   }

@@ -3,7 +3,6 @@
 ############################
 resource "aws_sns_topic" "alert" {
   name = "${var.prefix}-alert-topic"
-
   tags = {
     Name = "${var.prefix}-alert-topic"
   }
@@ -42,6 +41,9 @@ resource "aws_cloudwatch_metric_alarm" "ec2_cpu" {
 resource "aws_wafv2_web_acl" "alb" {
   name  = "${var.prefix}-webacl"
   scope = "REGIONAL"
+  tags = {
+    Name = "${var.prefix}-webacl"
+  }
 
   default_action {
     allow {}
@@ -74,10 +76,6 @@ resource "aws_wafv2_web_acl" "alb" {
       sampled_requests_enabled   = true
     }
   }
-
-  tags = {
-    Name = "${var.prefix}-webacl"
-  }
 }
 
 ############################
@@ -94,7 +92,6 @@ resource "aws_wafv2_web_acl_association" "main" {
 resource "aws_cloudwatch_log_group" "waf" {
   name              = "aws-waf-logs-${var.prefix}-webacl"
   retention_in_days = 1
-
   tags = {
     Name = "${var.prefix}-wafv2-logs"
   }

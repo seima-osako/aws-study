@@ -4,10 +4,11 @@ module "network" {
 }
 
 module "security" {
-  source     = "./modules/security-groups"
+  source     = "./modules/security"
   prefix     = var.prefix
   vpc_id     = module.network.vpc_id
   admin_cidr = var.admin_cidr
+  alb_arn    = module.compute.alb_arn
 }
 
 module "compute" {

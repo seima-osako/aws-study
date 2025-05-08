@@ -12,3 +12,8 @@ variable "admin_cidr" {
   description = "CIDR for SSH access (e.g. your office IP)"
   type        = string
 }
+
+variable "alb_arn" {
+  description = "ARN of the Application Load Balancer"
+  type        = string
+}
