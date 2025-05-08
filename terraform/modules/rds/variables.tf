@@ -1,34 +1,34 @@
-variable "prefix" {
-  description = "Resource name prefix"
+variable "db_password" {
   type        = string
-}
-
-variable "vpc_id" {
-  description = "ID of the VPC"
-  type        = string
+  description = "Master password for the RDS instance"
 }
 
 variable "db_subnet_ids" {
-  description = "List of subnet IDs for RDS"
   type        = list(string)
-}
-
-variable "ec2_sg_id" {
-  description = "Security Group ID to attach to the RDS instance"
-  type        = string
+  description = "List of subnet IDs for RDS"
 }
 
 variable "db_username" {
-  description = "Master username for the RDS instance"
   type        = string
+  description = "Master username for the RDS instance"
 }
 
-variable "db_password" {
-  description = "Master password for the RDS instance"
+variable "ec2_sg_id" {
   type        = string
+  description = "Security Group ID to attach to the RDS instance"
+}
+
+variable "prefix" {
+  type        = string
+  description = "Resource name prefix"
 }
 
 variable "rds_sg_id" {
-  description = "Security Group ID to attach to the RDS instance"
   type        = string
+  description = "Security Group ID to attach to the RDS instance"
+}
+
+variable "vpc_id" {
+  type        = string
+  description = "ID of the VPC"
 }

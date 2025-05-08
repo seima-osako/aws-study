@@ -1,44 +1,46 @@
-variable "prefix" {
-  description = "Resource name prefix"
+# Security group IDs to use for ALB and EC2
+variable "alb_sg_id" {
   type        = string
-}
-
-# VPC in which to launch the compute resources
-variable "vpc_id" {
-  description = "ID of the VPC"
-  type        = string
-}
-
-# Public subnets to deploy the ALB and EC2 into
-variable "public_subnet_ids" {
-  description = "List of public subnet IDs for ALB and EC2 placement"
-  type        = list(string)
+  description = "Security Group ID to attach to the ALB"
 }
 
 # AMI and instance type for the EC2 instance
 variable "ami_id" {
-  description = "AMI ID for the EC2 instance"
   type        = string
+  description = "AMI ID for the EC2 instance"
 }
 
-variable "instance_type" {
-  description = "EC2 instance type"
+# Security group IDs to use for ALB and EC2
+variable "ec2_sg_id" {
   type        = string
+  description = "Security Group ID to attach to the EC2 instance"
+}
+
+# AMI and instance type for the EC2 instance
+variable "instance_type" {
+  type        = string
+  description = "EC2 instance type"
 }
 
 # SSH key pair name to allow SSH access to the EC2 instance
 variable "key_name" {
+  type        = string
   description = "Name of the EC2 Key Pair"
-  type        = string
 }
 
-# Security group IDs to use for ALB and EC2
-variable "alb_sg_id" {
-  description = "Security Group ID to attach to the ALB"
+variable "prefix" {
   type        = string
+  description = "Resource name prefix"
 }
 
-variable "ec2_sg_id" {
-  description = "Security Group ID to attach to the EC2 instance"
+# Public subnets to deploy the ALB and EC2 into
+variable "public_subnet_ids" {
+  type        = list(string)
+  description = "List of public subnet IDs for ALB and EC2 placement"
+}
+
+# VPC in which to launch the compute resources
+variable "vpc_id" {
   type        = string
+  description = "ID of the VPC"
 }

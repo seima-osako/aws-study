@@ -1,26 +1,19 @@
-variable "prefix" {
-  description = "Resource name prefix"
+variable "alb_arn" {
   type        = string
+  description = "ARN of the Application Load Balancer"
 }
 
-########################################
-# SNS / CloudWatch Alarm
-########################################
 variable "alert_email" {
-  description = "Email address to receive CloudWatch alarm notifications"
   type        = string
+  description = "Email address to receive CloudWatch alarm notifications"
 }
 
 variable "ec2_instance_id" {
+  type        = string
   description = "EC2 instance ID to monitor"
-  type        = string
 }
 
-########################################
-# WAF
-########################################
-variable "alb_arn" {
-  description = "ARN of the Application Load Balancer"
+variable "prefix" {
   type        = string
+  description = "Resource name prefix"
 }
-
