@@ -8,9 +8,7 @@ resource "aws_instance" "app" {
   subnet_id              = var.public_subnet_ids[0]
   vpc_security_group_ids = [var.ec2_sg_id]
   tags = {
-    Name        = "${var.prefix}-ec2"
-    Environment = "lab"
-    Project     = var.prefix
+    Name = "${var.prefix}-ec2"
   }
 }
 
