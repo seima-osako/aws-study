@@ -1,3 +1,8 @@
+output "alb_arn" {
+  description = "ARN of the Application Load Balancer"
+  value       = aws_lb.app.arn
+}
+
 output "ec2_id" {
   description = "ID of the EC2 instance"
   value       = aws_instance.app.id

@@ -7,13 +7,13 @@ locals {
   # Creates a map associating Availability Zones with their corresponding Public Subnet CIDR blocks.
   # Keys are AZ names, values are CIDR blocks from var.public_subnet_cidrs based on index.
   # Includes a check to prevent errors if var.azs has more elements than var.public_subnet_cidrs.
-  public_map  = { for idx, az in var.azs : az => var.public_subnet_cidrs[idx]  if idx < length(var.public_subnet_cidrs) }
+  public_map = { for idx, az in var.azs : az => var.public_subnet_cidrs[idx] if idx < length(var.public_subnet_cidrs) }
 
   # Creates a map associating Availability Zones with their corresponding Private Subnet CIDR blocks.
   private_map = { for idx, az in var.azs : az => var.private_subnet_cidrs[idx] if idx < length(var.private_subnet_cidrs) }
 
   # Creates a map associating Availability Zones with their corresponding RDS Subnet CIDR blocks.
-  rds_map     = { for idx, az in var.azs : az => var.rds_subnet_cidrs[idx]     if idx < length(var.rds_subnet_cidrs) }
+  rds_map = { for idx, az in var.azs : az => var.rds_subnet_cidrs[idx] if idx < length(var.rds_subnet_cidrs) }
 }
 
 resource "aws_vpc" "main" {
@@ -27,14 +27,14 @@ resource "aws_vpc" "main" {
 
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
-  tags   = {
+  tags = {
     Name = "${var.prefix}-igw"
   }
 }
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
-  tags   = {
+  tags = {
     Name = "${var.prefix}-public-rtb"
   }
 }
@@ -47,14 +47,14 @@ resource "aws_route" "public_default" {
 
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
-  tags   = {
+  tags = {
     Name = "${var.prefix}-private-rtb"
   }
 }
 
 resource "aws_route_table" "db_private" {
   vpc_id = aws_vpc.main.id
-  tags   = {
+  tags = {
     Name = "rds-pvt-rt"
   }
 }
@@ -114,7 +114,7 @@ resource "aws_db_subnet_group" "main" {
   name        = "${var.prefix}-rds-subnet-group"
   description = "RDS private subnets (3AZ)"
   subnet_ids  = [for s in aws_subnet.db_private : s.id]
-  tags        = {
+  tags = {
     Name = "${var.prefix}-rds-subnet-group"
   }
 }
